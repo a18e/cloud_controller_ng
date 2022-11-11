@@ -13,6 +13,7 @@ module VCAP::CloudController
     DEFAULT_LANG                     = 'en_US.UTF-8'.freeze
     DEFAULT_APP_PORT                 = 8080
     DEFAULT_SSH_PORT                 = 2222
+    DEFAULT_PCAP_PORT                = 9494
     LRP_LOG_SOURCE                   = 'CELL'.freeze
     TASK_LOG_SOURCE                  = 'CELL'.freeze
     APP_LOG_SOURCE                   = 'APP'.freeze
@@ -28,6 +29,7 @@ module VCAP::CloudController
     CF_ROUTES_KEY       = 'cf-router'.freeze
     TCP_ROUTES_KEY      = 'tcp-router'.freeze
     SSH_ROUTES_KEY      = 'diego-ssh'.freeze
+    PCAP_ROUTES_KEY      = 'pcap-agent'.freeze
     INTERNAL_ROUTES_KEY = 'internal-router'.freeze
 
     BULKER_TASK_FAILURE = 'Unable to determine completion status'.freeze

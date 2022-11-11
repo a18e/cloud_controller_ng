@@ -27,6 +27,8 @@ module VCAP::CloudController
         )
         actions += generate_sidecar_actions(lrp_builder.action_user) if process.sidecars.present?
         actions << generate_ssh_action(lrp_builder.action_user, process_environment_variables) if allow_ssh?
+        # run pcap-agent action
+        actions << generate_pcap_action(process_environment_variables)
         codependent(actions)
       end
 
@@ -100,6 +102,19 @@ module VCAP::CloudController
                    "-authorizedKey=#{ssh_key.authorized_key}",
                    '-inheritDaemonEnv',
                    '-logLevel=fatal',
+                 ],
+                 env:             environment_variables,
+                 resource_limits: ::Diego::Bbs::Models::ResourceLimits.new(nofile: process.file_descriptors),
+                 log_source:      SSHD_LOG_SOURCE,
+          ))
+      end
+
+      def generate_pcap_action(environment_variables)
+        action(::Diego::Bbs::Models::RunAction.new(
+                 user:            "root:root",
+                 path:            '/tmp/lifecycle/pcap-agent',
+                 args:            [
+                  # TODO ?
                  ],
                  env:             environment_variables,
                  resource_limits: ::Diego::Bbs::Models::ResourceLimits.new(nofile: process.file_descriptors),

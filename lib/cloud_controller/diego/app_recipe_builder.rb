@@ -35,6 +35,9 @@ module VCAP::CloudController
         ssh_route = existing_routes.routes[SSH_ROUTES_KEY]
         routes[SSH_ROUTES_KEY] = ssh_route if ssh_route
 
+        pcap_route = existing_routes.routes[PCAP_ROUTES_KEY]
+        routes[PCAP_ROUTES_KEY] = pcap_route if pcap_route
+
         ::Diego::Bbs::Models::DesiredLRPUpdate.new(
           instances:  process.instances,
           annotation: process.updated_at.to_f.to_s,
@@ -60,6 +63,13 @@ module VCAP::CloudController
             host_fingerprint: ssh_key.fingerprint
           })
         end
+
+        ports << DEFAULT_PCAP_PORT
+        routes[PCAP_ROUTES_KEY] = MultiJson.dump({
+          container_port:   DEFAULT_PCAP_PORT,
+          private_key:      ssh_key.private_key,
+          host_fingerprint: ssh_key.fingerprint
+        })
 
         {
           process_guid:                     Diego::ProcessGuid.from_process(process),
